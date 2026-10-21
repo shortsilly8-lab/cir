@@ -16,14 +16,17 @@ print("sales.csv has been safely created!")
 data <- read.csv("sales.csv") 
 print(data) 
 
+#1 find the number of rows and columns 
 nr <- nrow(data) 
 nc <- ncol(data)  
 cat("Data available:", all(!is.na(data)), "\n") 
 cat("Number of rows:", nr, "\n") 
 cat("Number of columns:", nc, "\n") 
 
+#2 average of total sales 
 cat("Average of sales:", mean(data$Sales), "\n") 
 
+#3 Add 3 rows to the data frame
 new.data <- data.frame( 
 Date = c("1/18/2017","1/19/2017","1/20/2017"), 
 Day = c("Wednesday","Thursday","Friday"), 
@@ -37,6 +40,7 @@ final.data <- rbind(data, new.data)
 print(final.data) 
 print("3 rows are added") 
 
+#4  Find the day and date when maximum sales were made 
 # Finding maximum sales 
 salesmax <- max(final.data$Sales) 
 print(salesmax)  
@@ -44,6 +48,7 @@ print(salesmax)
 data2 <- subset(final.data, Sales == salesmax, select = c(Date, Day, Sales)) 
 print(data2) 
 
+#5 Find the day and date when minimum sales were made 
 # Finding minimum sales 
 salesmin <- min(final.data$Sales) 
 print(salesmin)  
@@ -51,9 +56,11 @@ print(salesmin)
 data3 <- subset(final.data, Sales == salesmin, select = c(Date, Day, Sales)) 
 print(data3) 
 
+#6 Find the maximum sales based on temperature 
 data4 <- tapply(final.data$Sales, final.data$Temperature, max) 
 print(data4) 
 
+#7  Add a new column Total 
 # Total = Price x Sales (total revenue of the day) 
 final.data$Total <- final.data$Price * final.data$Sales 
 print(final.data) 
