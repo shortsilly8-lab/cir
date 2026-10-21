@@ -1,11 +1,8 @@
 #7 Write a program to use the data set "mtcars" available in the R environment to create a basic scatter-plot. 
 
 data("mtcars") 
-input <- mtcars[, c("wt", "mpg")]  
+input <- subset(mtcars, select = c(wt, mpg))
 png(file = "scatterplot.png")  
 # Plot the chart for cars with weight between 2.5 to 5 and mileage between 15 and 30 
-plot(x = input$wt, y = input$mpg, 
-xlab = "Weight", ylab = "Mileage", 
-xlim = c(2.5, 5), ylim = c(15, 30), 
-main = "Weight vs Mileage")  
+plot(x = input$wt, y = input$mpg, xlab = "Weight", ylab = "Mileage", xlim = c(2.5, 5), ylim = c(15, 30), main = "Weight vs Mileage")  
 dev.off() 
