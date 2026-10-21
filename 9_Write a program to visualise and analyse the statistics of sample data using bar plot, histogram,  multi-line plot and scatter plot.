@@ -1,0 +1,63 @@
+#9 Write a program to visualise and analyse the statistics of sample data using bar plot, histogram, multi-line plot and scatter plot. 
+
+install.packages("readxl")
+install.packages("writexl")
+library(writexl)
+library(readxl) 
+rdata_mock <- data.frame(
+  Date = c("1/1/2017", "1/2/2017", "1/3/2017", "1/4/2017", "1/5/2017"),
+  Day = c("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"),
+  Temperature = c(27.0, 28.9, 34.5, 44.1, 42.4),
+  Rainfall = c(2.00, 1.33, 1.33, 1.05, 1.00),
+  Flyers = c(15, 15, 27, 28, 33),
+  Price = c(0.30, 0.30, 0.30, 0.30, 0.30),
+  Sales = c(10, 13, 15, 17, 18)
+)
+write_xlsx(rdata_mock, "RDATA.xlsx")
+write.csv(rdata_mock, "RDATA2.csv", row.names = FALSE)
+print("Data files successfully created!")
+
+#1. Bar plot 
+input <- read_excel("RDATA.xlsx") 
+input  
+png(file = "BarPlot.png")  
+barplot(input$Temperature, xlab = "Record number", ylab = "Temperature", main = "Bar plot of Temperature", col = "green")  
+dev.off() 
+
+#2. Multi-line plot 
+data <- read.csv("RDATA2.csv") 
+print(data)  
+t <- data[, c("Temperature")] 
+s <- data[, c("Sales")] 
+print(t) 
+print(s)  
+png(file = "MultiLine.png")  
+# Plot the multi-line chart 
+plot(t, type = "o", col = "red", xlab = "Day", ylab = "Temperature / Sales", main = "Sales & Temperature", ylim = range(c(t, s))) 
+lines(s, type = "o", col = "blue") 
+legend("topleft", legend = c("Temperature", "Sales"), col = c("red", "blue"), lty = 1, pch = 1, cex = 0.8)  
+dev.off() 
+
+#3. Histogram 
+library(readxl) 
+input <- read_excel("RDATA.xlsx")  
+png(file = "Histogram.png")  
+hist(input$Temperature, labels = TRUE, xlab = "Temperature", 
+     main = "Histogram of Temperature", col = "gold", border = "firebrick1")  
+dev.off() 
+
+#4. Scatter plot and scatter plot matrix 
+library(readxl) 
+input <- read_excel("RDATA.xlsx") 
+print(head(input))  
+# Scatter plot of Temperature vs Sales 
+png(file = "scatterplot.png") 
+plot(x = input$Temperature, y = input$Sales, 
+     xlab = "Temperature", ylab = "Sales", 
+     main = "TEMPERATURE vs SALES") 
+dev.off()  
+# Scatter plot matrix of 4 variables (16 panels) 
+png(file = "scatterplot_matrices.png") 
+pairs(~ Temperature + Rainfall + Price + Sales, data = input, 
+      main = "SCATTERPLOT MATRIX") 
+dev.off()
