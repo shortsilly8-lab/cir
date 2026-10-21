@@ -1,0 +1,117 @@
+#8 Use Covid data and perform the following: 
+
+#1. Compare the total Covid cases of one month (April 2020) for 5 states and show the state with the best recovery percentage 
+rm(list = ls()) 
+data1 <- read.csv("covid_state.csv") 
+print(data1)  
+states  <- c("MH", "AP", "AR", "AS", "BR") 
+labels1 <- c("Maharashtra", "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar")  
+# Recovery percentage of each state for April 2020 
+rec_per <- numeric(length(states)) 
+for (k in 1:length(states)) { 
+st <- subset(data1, State == states[k] & as.Date(c_date) >= as.Date("2020-04-01") & as.Date(c_date) <= as.Date("2020-04-30")) 
+rec_per[k] <- (sum(st$Recovered) / sum(st$tot_cases)) * 100 
+} 
+print(rec_per)  
+best <- which.max(rec_per) 
+cat(labels1[best], "is the best state with a recovery rate of", max(rec_per), ".\n")  
+# Pie chart of the recovery percentages 
+x <- round(rec_per, 2) 
+png(file = "State_Recovery_Pie_Chart.png") 
+pie(x, labels = x, main = "State Recovery Pie Chart", col = rainbow(length(x))) 
+legend("topright", labels1, cex = 0.6, fill = rainbow(length(x))) 
+dev.off() 
+
+
+#2. Compare cases raised from the previous month (April) to the current month (May) – Maharashtra 
+rm(list = ls()) 
+data1 <- read.csv("covid_state.csv")  
+mh_april <- subset(data1, State == "MH" & as.Date(c_date) >= as.Date("2020-04-01") & as.Date(c_date) <= as.Date("2020-04-30")) 
+mh_may <- subset(data1, State == "MH" & as.Date(c_date) >= as.Date("2020-05-01") & as.Date(c_date) <= as.Date("2020-05-31"))  
+cases_april <- sum(mh_april$tot_cases) 
+cases_may <- sum(mh_may$tot_cases) 
+print(cases_april) 
+print(cases_may)  
+cases_raised <- cases_may - cases_april 
+cat("Difference in cases from April to May is", cases_raised, ".\n")  
+# Line chart comparing the two months 
+png(file = "Cases_comparison_April_May.png") 
+plot(mh_april$tot_cases, type = "o", col = "red", xlab = "Month", 
+ylab = "Total Cases", main = "Total Cases Chart month-wise") 
+lines(mh_may$tot_cases, type = "o", col = "blue") 
+dev.off() 
+
+
+#3. Plot a pie chart / histogram of total cases, recovered cases and total tests [Maharashtra only] 
+data1 <- read.csv("covid_state.csv")  
+mh_apr <- subset(data1, State == "MH" & as.Date(c_date) >= as.Date("2020-04-01") & as.Date(c_date) <= as.Date("2020-04-30")) 
+print(mh_apr)  
+rec03 <- mh_apr$Recovered 
+tot03 <- mh_apr$tot_tests 
+conf03 <- mh_apr$Confirmed 
+v <- c(sum(rec03), sum(tot03), sum(conf03)) 
+print(v)  
+# Histogram of recovered cases 
+png(file = "Covid-19_cases.png") 
+hist(rec03, xlab = "Weight", col = "cyan1", border = "navy", main = "Covid-19 cases") 
+dev.off()  
+# Pie chart of recovered cases, total tests and confirmed cases 
+png(file = "Covid19_PIE.png") 
+labels <- c("Recovered", "Total Tests", "Confirmed Cases") 
+pie(v, labels, main = "Covid Analysis", col = topo.colors(length(v))) 
+legend("topright", labels, cex = 0.8, fill = topo.colors(length(v))) 
+dev.off() 
+
+
+#4. Get the month where maximum patients were recovered and find the test ratio 
+data1 <- read.csv("covid_state.csv") 
+mh_mon <- subset(data1, State == "MH") 
+print(mh_mon)  
+# Month of each record (April to October 2020) 
+ym <- format(as.Date(mh_mon$c_date), "%Y-%m") 
+months <- 4:10 
+labels2 <- c("April", "May", "June", "July", "August", "September", "October")  
+monthrec <- numeric(7) 
+monthtot <- numeric(7) 
+for (k in 1:7) { 
+mm <- subset(mh_mon, ym == sprintf("2020-%02d", months[k])) 
+monthrec[k] <- sum(mm$Recovered) 
+monthtot[k] <- sum(mm$tot_tests) 
+} 
+print(monthrec)  
+maxrecmonth <- max(monthrec) 
+print(maxrecmonth) 
+cat(labels2[which.max(monthrec)], "is the month with the maximum recovered patients:", maxrecmonth, ".\n")  
+# Test ratio = recovered / total tests 
+testratio <- monthrec / monthtot 
+testratioframe <- data.frame(months = labels2, test_ratio = testratio, stringsAsFactors = FALSE) 
+print("Test Ratio DataFrame=") 
+print(testratioframe)  
+# Histogram of the test ratio 
+x <- testratioframe$test_ratio 
+png(file = "Test_Ratio_Histogram.png") 
+hist(x, xlab = "Weight", col = "aquamarine", border = "blue4", 
+xlim = c(0, 0.5), ylim = c(0, 5), breaks = 5, main = "Histogram") 
+dev.off() 
+
+
+#5. Compare country-wise the Covid cases in terms of total cases 
+rm(list = ls()) 
+data2 <- read.csv("covid19_countries.csv")  
+codes <- c("IND", "US", "BRA", "RUSS", "UK") 
+ctry_labels <- c("India", "United States", "Brazil", "Russia", "United Kingdom")  
+# Recovery percentage of each country 
+recperccountry <- numeric(length(codes)) 
+for (k in 1:length(codes)) { 
+cn <- subset(data2, c_codes == codes[k]) 
+recperccountry[k] <- (sum(cn$Recovered) / sum(cn$tot_cases)) * 100 
+} 
+print(recperccountry)  
+best <- which.max(recperccountry) 
+cat(ctry_labels[best], "is the best country with a recovery rate of", max(recperccountry), ".\n")  
+# Pie chart of the recovery percentages 
+x <- round(recperccountry, 2) 
+png(file = "International_Recovery_Pie_Chart.png") 
+pie(x, labels = x, main = "International Recovery Pie Chart", col = rainbow(length(x))) 
+legend("topright", ctry_labels, cex = 0.6, fill = rainbow(length(x))) 
+dev.off()
